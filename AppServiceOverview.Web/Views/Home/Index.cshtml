@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+}
+
+<div class="page-header">
+    <h1>Get Team Rank</h1>
+</div>
+<form class="form-inline">
+    <div class="form-group">
+        <label for="TeamNumber">Team Number</label>
+        <input type="number" id="TeamNumber" class="form-control" />
+    </div>
+    <button type="button" id="GetRankButton" class="btn btn-primary">Get Rank</button>
+</form>
+<blockquote>
+    <p id="RankResult"></p>
+</blockquote>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#GetRankButton").click(function () {
+                var teamNumber = $("#TeamNumber").val();
+
+                $.getJSON('/api/rank/' + teamNumber).done(function (result) {
+                    $("#RankResult").text(result);
+                });
+            });
+        });
+    </script>    
+}
