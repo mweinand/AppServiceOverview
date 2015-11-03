@@ -6,6 +6,8 @@ using Swashbuckle.Application;
 using Swashbuckle.Swagger;
 using WebActivatorEx;
 using AppServiceOverview.Api;
+using System;
+using System.Collections.Generic;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
@@ -171,55 +173,84 @@ namespace AppServiceOverview.Api
                         //
                         //c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                         // ***** Uncomment the following to enable the swagger UI *****
-                        
-                            })
+
+                        c.OperationFilter<TriggerStateFilter>();
+                    })
                         .EnableSwaggerUi(c =>
                             {
-                        
-                        // Use the "InjectStylesheet" option to enrich the UI with one or more additional CSS stylesheets.
-                        // The file must be included in your project as an "Embedded Resource", and then the resource's
-                        // "Logical Name" is passed to the method as shown below.
-                        //
-                        //c.InjectStylesheet(containingAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testStyles1.css");
 
-                        // Use the "InjectJavaScript" option to invoke one or more custom JavaScripts after the swagger-ui
-                        // has loaded. The file must be included in your project as an "Embedded Resource", and then the resource's
-                        // "Logical Name" is passed to the method as shown above.
-                        //
-                        //c.InjectJavaScript(thisAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testScript1.js");
+                                // Use the "InjectStylesheet" option to enrich the UI with one or more additional CSS stylesheets.
+                                // The file must be included in your project as an "Embedded Resource", and then the resource's
+                                // "Logical Name" is passed to the method as shown below.
+                                //
+                                //c.InjectStylesheet(containingAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testStyles1.css");
 
-                        // The swagger-ui renders boolean data types as a dropdown. By default, it provides "true" and "false"
-                        // strings as the possible choices. You can use this option to change these to something else,
-                        // for example 0 and 1.
-                        //
-                        //c.BooleanValues(new[] { "0", "1" });
+                                // Use the "InjectJavaScript" option to invoke one or more custom JavaScripts after the swagger-ui
+                                // has loaded. The file must be included in your project as an "Embedded Resource", and then the resource's
+                                // "Logical Name" is passed to the method as shown above.
+                                //
+                                //c.InjectJavaScript(thisAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testScript1.js");
 
-                        // Use this option to control how the Operation listing is displayed.
-                        // It can be set to "None" (default), "List" (shows operations for each resource),
-                        // or "Full" (fully expanded: shows operations and their details).
-                        //
-                        //c.DocExpansion(DocExpansion.List);
+                                // The swagger-ui renders boolean data types as a dropdown. By default, it provides "true" and "false"
+                                // strings as the possible choices. You can use this option to change these to something else,
+                                // for example 0 and 1.
+                                //
+                                //c.BooleanValues(new[] { "0", "1" });
 
-                        // Use the CustomAsset option to provide your own version of assets used in the swagger-ui.
-                        // It's typically used to instruct Swashbuckle to return your version instead of the default
-                        // when a request is made for "index.html". As with all custom content, the file must be included
-                        // in your project as an "Embedded Resource", and then the resource's "Logical Name" is passed to
-                        // the method as shown below.
-                        //
-                        //c.CustomAsset("index", containingAssembly, "YourWebApiProject.SwaggerExtensions.index.html");
+                                // Use this option to control how the Operation listing is displayed.
+                                // It can be set to "None" (default), "List" (shows operations for each resource),
+                                // or "Full" (fully expanded: shows operations and their details).
+                                //
+                                //c.DocExpansion(DocExpansion.List);
 
-                        // If your API has multiple versions and you've applied the MultipleApiVersions setting
-                        // as described above, you can also enable a select box in the swagger-ui, that displays
-                        // a discovery URL for each version. This provides a convenient way for users to browse documentation
-                        // for different API versions.
-                        //
-                        //c.EnableDiscoveryUrlSelector();
+                                // Use the CustomAsset option to provide your own version of assets used in the swagger-ui.
+                                // It's typically used to instruct Swashbuckle to return your version instead of the default
+                                // when a request is made for "index.html". As with all custom content, the file must be included
+                                // in your project as an "Embedded Resource", and then the resource's "Logical Name" is passed to
+                                // the method as shown below.
+                                //
+                                //c.CustomAsset("index", containingAssembly, "YourWebApiProject.SwaggerExtensions.index.html");
 
-                        // If your API supports the OAuth2 Implicit flow, and you've described it correctly, according to
-                        // the Swagger 2.0 specification, you can enable UI support as shown below.
-                        //
-                        //c.EnableOAuth2Support("test-client-id", "test-realm", "Swagger UI");
-                    });
+                                // If your API has multiple versions and you've applied the MultipleApiVersions setting
+                                // as described above, you can also enable a select box in the swagger-ui, that displays
+                                // a discovery URL for each version. This provides a convenient way for users to browse documentation
+                                // for different API versions.
+                                //
+                                //c.EnableDiscoveryUrlSelector();
+
+                                // If your API supports the OAuth2 Implicit flow, and you've described it correctly, according to
+                                // the Swagger 2.0 specification, you can enable UI support as shown below.
+                                //
+                                //c.EnableOAuth2Support("test-client-id", "test-realm", "Swagger UI");
+
+                            });
+        }
+    }
+    // Add extension properties on the triggerState parameter
+    internal class TriggerStateFilter : IOperationFilter
+    {
+
+        public void Apply(Operation operation, SchemaRegistry schemaRegistry, System.Web.Http.Description.ApiDescription apiDescription)
+        {
+            if (operation.operationId.IndexOf("Trigger", StringComparison.InvariantCultureIgnoreCase) >= 0)
+            {
+                // this is a possible trigger
+                var triggerStateParam = operation.parameters.FirstOrDefault(x => x.name.Equals("triggerState"));
+                if (triggerStateParam != null)
+                {
+                    if (triggerStateParam.vendorExtensions == null)
+                    {
+                        triggerStateParam.vendorExtensions = new Dictionary<string, object>();
+                    }
+
+                    // add 2 vendor extensions
+                    // x-ms-visibility: set to 'internal' to signify this is an internal field
+                    // x-ms-scheduler-recommendation: set to a value that logic app can use
+                    triggerStateParam.vendorExtensions.Add("x-ms-visibility", "internal");
+                    triggerStateParam.vendorExtensions.Add("x-ms-scheduler-recommendation",
+                                                           "@coalesce(triggers()?.outputs?.body?['triggerState'], '')");
+                }
+            }
         }
     }
 
