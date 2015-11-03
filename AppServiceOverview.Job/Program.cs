@@ -1,22 +1,56 @@
-﻿using System;
+﻿using AppServiceOverview.Data;
+using AppServiceOverview.Data.Entities;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
 
 namespace AppServiceOverview.Job
 {
-    // To learn more about Microsoft Azure WebJobs SDK, please see http://go.microsoft.com/fwlink/?LinkID=320976
     class Program
     {
-        // Please set the following connection strings in app.config for this WebJob to run:
-        // AzureWebJobsDashboard and AzureWebJobsStorage
-        static void Main()
+        static void Main(string[] args)
         {
-            var host = new JobHost();
-            // The following code ensures that the WebJob will be running continuously
-            host.RunAndBlock();
+            var cancellationToken = new CancellationTokenSource();
+            Program.DoWork(cancellationToken);
+
+            while(Console.ReadLine() != "q")
+            {
+
+            }
+
+            cancellationToken.Cancel();
+        }
+
+        public static async Task DoWork(CancellationTokenSource cancellationToken)
+        {
+            while(!cancellationToken.IsCancellationRequested)
+            {
+                await UpdateRank();
+                await Task.Delay(5000);
+            }
+        }
+
+        public static async Task UpdateRank()
+        {
+            using (var dataContext = new AppServiceDataContext())
+            {
+                var repository = new Repository(dataContext);
+
+                var team = await repository.Query<Team>().FirstOrDefaultAsync();
+                if (team != null)
+                {
+                    Console.WriteLine("Loaded team: {0}", team.Id);
+                    var random = new Random();
+                    var increment = random.Next(-5, 5);
+                    team.Rank += increment;
+                    await repository.SaveChangesAsync();
+                    Console.WriteLine("Updated team rank to: {0}", team.Rank);
+                }
+            }
         }
     }
 }

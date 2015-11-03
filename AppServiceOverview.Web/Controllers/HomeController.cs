@@ -8,9 +8,10 @@ namespace AppServiceOverview.Web.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: Home
+        [OutputCache(Duration = 0, Location = System.Web.UI.OutputCacheLocation.None)]
         public ActionResult Index()
         {
+            ViewBag.ComputerName = Environment.MachineName;
             return View();
         }
     }
