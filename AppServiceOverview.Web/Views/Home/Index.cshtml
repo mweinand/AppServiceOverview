@@ -25,7 +25,7 @@
                 var teamNumber = $("#TeamNumber").val();
 
                 $.getJSON('/api/rank/' + teamNumber).done(function (result) {
-                    $("#RankResult").text(result);
+                    $("#RankResult").text(result.Rank);
                 });
             });
         });
