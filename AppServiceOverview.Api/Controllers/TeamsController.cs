@@ -39,27 +39,29 @@ namespace AppServiceOverview.Api.Controllers
             return Ok(result);
         }
 
-        [Route("api/teams/{id}/ranktrigger")]
-        [ResponseType(typeof(Team))]
-        public HttpResponseMessage GetRankUpdatedTrigger(string triggerState, int id)
-        {
-            var team = repository.GetById<Team>(id);
+        #region Logic App Trigger
+        //[Route("api/teams/{id}/ranktrigger")]
+        //[ResponseType(typeof(Team))]
+        //public HttpResponseMessage GetRankUpdatedTrigger(string triggerState, int id)
+        //{
+        //    var team = repository.GetById<Team>(id);
             
-            var lastTriggerTimeUtc = String.IsNullOrEmpty(triggerState)
-                ? DateTime.MinValue
-                : DateTime.Parse(triggerState).ToUniversalTime();
+        //    var lastTriggerTimeUtc = String.IsNullOrEmpty(triggerState)
+        //        ? DateTime.MinValue
+        //        : DateTime.Parse(triggerState).ToUniversalTime();
 
-            if (team == null)
-            {
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
-            }
+        //    if (team == null)
+        //    {
+        //        return new HttpResponseMessage(HttpStatusCode.NotFound);
+        //    }
 
-            if (team.LastUpdated > lastTriggerTimeUtc)
-            {
-                return this.Request.EventTriggered(team);
-            }
+        //    if (team.LastUpdated > lastTriggerTimeUtc)
+        //    {
+        //        return this.Request.EventTriggered(team);
+        //    }
 
-            return this.Request.EventWaitPoll(new TimeSpan(0, 1, 0));
-        }
+        //    return this.Request.EventWaitPoll(new TimeSpan(0, 1, 0));
+        //}
+        #endregion
     }
 }
