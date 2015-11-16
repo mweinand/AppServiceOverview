@@ -9,6 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200">
+            <Button x:Name="LoginButton" Click="LoginButton_Click">Login</Button>
             <TextBlock Text="Team Number" />
             <TextBox x:Name="TeamNumber" />
             <Button x:Name="GetRankButton" Click="GetRankButton_Click">Get Rank</Button>

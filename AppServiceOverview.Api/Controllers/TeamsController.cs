@@ -20,7 +20,7 @@ namespace AppServiceOverview.Api.Controllers
             this.repository = new Repository(dataContext);
         }
 
-        [ResponseType(typeof(Team))]
+        [ResponseType(typeof(TeamModel))]
         public IHttpActionResult Get(int id)
         {
             var team = repository.GetById<Team>(id);
@@ -45,7 +45,7 @@ namespace AppServiceOverview.Api.Controllers
         //public HttpResponseMessage GetRankUpdatedTrigger(string triggerState, int id)
         //{
         //    var team = repository.GetById<Team>(id);
-            
+
         //    var lastTriggerTimeUtc = String.IsNullOrEmpty(triggerState)
         //        ? DateTime.MinValue
         //        : DateTime.Parse(triggerState).ToUniversalTime();

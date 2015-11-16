@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,12 @@ namespace AppServiceOverview.Windows
     /// </summary>
     sealed partial class App : Application
     {
+        public static MobileServiceClient MobileService = new MobileServiceClient(
+            "https://frc-rank-mobile-01.azurewebsites.net",
+            "https://appservicetrial01161f29e97bae4ddb86dbf0fe944b5fdb.azurewebsites.net",
+            ""
+        );
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
