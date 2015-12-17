@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AppServiceOverview.Web.Controllers
@@ -11,6 +8,10 @@ namespace AppServiceOverview.Web.Controllers
         [OutputCache(Duration = 0, Location = System.Web.UI.OutputCacheLocation.None)]
         public ActionResult Index()
         {
+            #region Oops
+            // throw new Exception("Oops"); 
+            #endregion
+
             ViewBag.ComputerName = Environment.MachineName;
             return View();
         }

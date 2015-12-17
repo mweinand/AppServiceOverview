@@ -10,4 +10,4 @@ SELECT [Id]
 GO
 
 
-UPDATE [dbo].[Teams] SET [Rank] = 1, [LastUpdated] = GETUTCDATE() WHERE [Id] = 537
+UPDATE [dbo].[Teams] SET [Rank] = 15, [LastUpdated] = GETUTCDATE() WHERE [Id] = 537
