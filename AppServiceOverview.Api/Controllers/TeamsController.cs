@@ -1,10 +1,6 @@
 ﻿using AppServiceOverview.Api.Models;
 using AppServiceOverview.Data;
 using AppServiceOverview.Data.Entities;
-using Microsoft.Azure.AppService.ApiApps.Service;
-using System;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 

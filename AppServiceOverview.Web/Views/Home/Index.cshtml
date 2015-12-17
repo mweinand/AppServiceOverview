@@ -28,6 +28,8 @@
 
                 $.getJSON('/api/rank/' + teamNumber).done(function (result) {
                     $("#RankResult").text(result.Rank);
+                }).fail(function (result) {
+                    $("#RankResult").text('Not Found');
                 });
             });
         });

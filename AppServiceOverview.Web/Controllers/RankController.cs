@@ -1,10 +1,7 @@
 ﻿using AppServiceOverview.Data;
 using AppServiceOverview.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace AppServiceOverview.Web.Controllers
@@ -12,15 +9,18 @@ namespace AppServiceOverview.Web.Controllers
     public class RankController : ApiController
     {
 
-        public IHttpActionResult GetTeamRank(int id)
+        public async Task<IHttpActionResult> GetTeamRank(int id)
         {
+            Trace.TraceInformation("Getting rank for team {0}", id);
+
             var dataContext = new AppServiceDataContext();
             var repository = new Repository(dataContext);
 
-            var team = repository.GetById<Team>(id);
+            var team = await repository.GetByIdAsync<Team>(id);
 
             if (team == null)
             {
+                Trace.TraceWarning("Team not found in database: {0}", id);
                 return NotFound();
             }
 
